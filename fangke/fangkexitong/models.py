@@ -26,12 +26,27 @@ class Users(BaseModel, db.Model):
     """ 用户表"""
     __tablename__ = "fk_users"
 
-    id = db.Column(db.Integer, primary_key=True)  # 邀请函编号
+    id = db.Column(db.Integer, primary_key=True)  # 编号
     username = db.Column(db.String(32),unique=True, nullable=False)  # 用户名
-    password = db.Column(db.String(32), nullable=False)
-    full_name = db.Column(db.Integer, nullable=False)  # 用户名
+    password = db.Column(db.String(32), nullable=False)  # 密码
+    full_name = db.Column(db.String(32), nullable=False)  # 姓名
     phone = db.Column(db.String(11), nullable=False)  # 手机号
     company = db.Column(db.String(32), nullable=False)  # 公司的名称
+
+    # # 通过装饰器property，把password方法提升为属性
+    # @property
+    # def password(self):
+    #     """获取password属性时被调用"""
+    #     raise AttributeError("不可读")
+    #
+    # @password.setter
+    # def password(self, passwd):
+    #     """设置password属性时被调用，设置密码加密"""
+    #     self.password_hash = generate_password_hash(passwd)
+    #
+    # def check_password(self, passwd):
+    #     """检查密码的正确性"""
+    #     return check_password_hash(self.password_hash, passwd)
 
 
 
@@ -54,7 +69,7 @@ class Invitation(BaseModel, db.Model):
     user_id = db.Column(db.String(32), nullable=False)  # 租户的id(用户名)
     state = db.Column(db.String(32),  nullable=False)  # 邀请函的状态
     flag = db.Column(db.Boolean,  default=True)  # 邀请函的群发和个人
-    invit_person = db.relationship("PersonOpen", backref="invitation")  # 受邀人的外键
+    # invit_person = db.relationship("PersonOpen", backref="invitation")  # 受邀人的外键
 
     def inviting_object(self):
         """访客邀请列表"""
@@ -109,10 +124,6 @@ class InvitingPerson(BaseModel, db.Model):
             "company": self.company
         }
         return info_mation
-
-
-
-
 
 class PersonOpen(BaseModel, db.Model):
     """受邀人和租户的关系"""

@@ -12,7 +12,7 @@ from fangkexitong.models import Invitation, Users
 import json, re
 # 导入日期模块
 import datetime
-
+import os
 
 @api.route('/users/login', methods=['POST'])
 def login():
@@ -206,3 +206,36 @@ def list_invite():
     data["time"] = datetime.datetime.now().strftime('%Y-%m-%d')
     return jsonify(success=RET.OK, data=data)
 
+@api.route('/users/push', methods=['POST'])
+def post_image():
+    """
+    上传图片
+    :return:
+    """
+    #  获取json中的数据
+    info_data = request.get_json()
+    invite_id = info_data.get('invite_id')
+    user_id = info_data.get('user_id')
+    #  获取请求中的文件数据
+    f = request.files['file']
+    filename = invite_id+user_id + ".jpg"
+    f.save(os.path.join('fangkexitong/invite', filename))
+    # f.save('app/static/' + str(filename))
+    return jsonify(success=RET.OK, data="OK")
+
+
+@api.route('/users/pull', methods=['GET'])
+def poll_image():
+    """
+    上传图片
+    :return:
+    """
+    #  获取json中的数据
+    info_data = request.get_json()
+    invite_id = info_data.get('invite_id')
+    user_id = info_data.get('user_id')
+
+    filename = invite_id + user_id + ".jpg"
+    # image = file(os.path.join('fangkexitong/invite', filename))
+    image = "/static/invite/" + filename
+    return jsonify(success=RET.OK, data=image)

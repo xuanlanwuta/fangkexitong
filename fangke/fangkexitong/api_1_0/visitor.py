@@ -45,7 +45,6 @@ def post_infomation():
       :return:
       """
     # 获取post请求的json字符串
-    global personopen, visitor
     carry_data = request.get_json()  #  访客可能不是一个人,总是列表
     # 检查参数的存在
     if not carry_data:
@@ -74,13 +73,12 @@ def post_infomation():
             user_name = g.user_name
             user_comp = g.user_comp
             personopen = PersonOpen(inperson_id=invitingperson.id,invite_id=invite_id,inperson_name=full_name,user_id=user_id,user_name=user_name,user_comp=user_comp)
-            invit = Invitation.query.filter_by(id=invite_id).first()
-            invit.state = "已生效"
+            Invitation.query.filter_by(id=invite_id).updata({"state": "已生效"})
             data.append(invitingperson.inviting_info())
         if i != 0:  #  查询数据库看是否已经存在     后面的受访人放到受访人的表
             try:
                 visitors = Visitors.query.filter_by(full_name=full_name,phone=phone).first()
-                if visitor is None:
+                if visitors is None:
                     visitor = Visitors(full_name=full_name,phone=phone,email=email,id_type=id_type,id_num=id_num,company=company,inperson_id=invitingperson.id)
             except Exception as e:
                 current_app.logger.error(e)

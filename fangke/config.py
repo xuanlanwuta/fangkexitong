@@ -8,7 +8,7 @@ class Config:
 
     # flask-sqlalchemy使用的参数
     # SQLALCHEMY_DATABASE_URI = "mssql+pymssql://visitor:123456@172.16.1.6/visitor"  # 数据库
-    SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@localhost/visitor?charset=utf8"  # 数据库
+    SQLALCHEMY_DATABASE_URI = "mysql://root:218830@localhost/visitor0517?charset=utf8"  # 数据库
     SQLALCHEMY_TRACK_MODIFICATIONS = True  # 追踪数据库的修改行为，如果不设置会报警告，不影响代码的执行
 
     # 创建redis实例用到的参数
