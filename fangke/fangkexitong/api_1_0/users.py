@@ -7,7 +7,7 @@ from fangkexitong import db
 # 导入自定义状态码
 from fangkexitong.utils.response_code import RET
 # 导入模型类
-from fangkexitong.models import Invitation, InvitingPerson, PersonOpen, Visitors, Applicant
+from fangkexitong.models import Invitation, Users
 # 导入json模块
 import json, re
 # 导入日期模块
@@ -33,7 +33,7 @@ def login():
         return jsonify(success=RET.WRONG, data='参数缺失!')
     # 查询数据库
     try:
-        user = User.query.filter_by(username=username).first()  # 这个库不再我这可能有问题
+        user = Users.query.filter_by(username=username).first()  # 这个库不再我这可能有问题  # 用户名
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(success=RET.WRONG, data='账号密码不正确!')
@@ -42,11 +42,11 @@ def login():
         return jsonify(success=RET.WRONG, data='账号密码不正确!')
     # 缓存用户信息
     g.user_id = user.id
-    g.user_name = user.name
+    g.user_name = user.username
     g.user_phone = user.phone
 
     # 返回结果
-    return jsonify(success=RET.OK, data={"user_id":user.id})
+    return jsonify(success=RET.OK, data={"user_id": user.id})
 
 
 @api.route('/users/invite', methods=['POST'])
@@ -196,12 +196,12 @@ def list_invite():
         # user_name = g.user_name
         # user_phone = g.user_phone
         invitation = Invitation.query.filter_by(id=invite_id).first()
-        user = User.query.filter_by(id=user_id).first()
+        user = Users.query.filter_by(id=user_id).first()
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(success=RET.DBERR, data='查询数据异常')
     data = invitation.inviting_infomation()
-    data["user_name"] = user.name
+    data["user_name"] = user.full_name
     data["user_phone"] = user.phone
     data["time"] = datetime.datetime.now().strftime('%Y-%m-%d')
     return jsonify(success=RET.OK, data=data)

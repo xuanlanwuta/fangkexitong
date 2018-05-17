@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 
 # 链接数据库('数据库类型+数据库驱动名称://用户名:口令@机器地址:端口号/数据库名')
-engine = db.create_engine("mysql://root:mysql@172.0.0.1/visitor", echo=True)   # 数据库
+engine = db.create_engine("mysql://root:mysql@172.0.0.1/visitor", encoding='utf-8', echo=True)   # 数据库
 Base = declarative_base()# 生成SQLORM基类
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
@@ -21,6 +21,19 @@ class BaseModel(object):
 
     create_time = db.Column(db.DateTime, default=datetime.now)  # 记录的创建时间
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # 记录的更新时间
+
+class Users(BaseModel, db.Model):
+    """ 用户表"""
+    __tablename__ = "fk_users"
+
+    id = db.Column(db.Integer, primary_key=True)  # 邀请函编号
+    username = db.Column(db.String(32),unique=True, nullable=False)  # 用户名
+    password = db.Column(db.String(32), nullable=False)
+    full_name = db.Column(db.Integer, nullable=False)  # 用户名
+    phone = db.Column(db.String(11), nullable=False)  # 手机号
+    company = db.Column(db.String(32), nullable=False)  # 公司的名称
+
+
 
 
 class Invitation(BaseModel, db.Model):
